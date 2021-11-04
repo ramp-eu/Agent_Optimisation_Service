@@ -1,4 +1,4 @@
-# <TITLE>
+﻿# <TITLE>
 
 [![License: MIT](https://img.shields.io/github/license/ramp-eu/TTE.project1.svg)](https://opensource.org/licenses/MIT)
 [![Docker badge](https://img.shields.io/docker/pulls/ramp-eu/TTE.project1.svg)](https://hub.docker.com/r/<org>/<repo>/)
@@ -75,7 +75,7 @@ The following features are listed as [deprecated](docs/deprecated.md).
 ## API
 
 ```text
-Definition of the API interface:
+Definition of the API interface :
 
 Information about the API of  the <Name of component> can be found in the [API documentation](docs/api.md).
 
