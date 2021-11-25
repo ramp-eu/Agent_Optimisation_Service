@@ -1,97 +1,165 @@
-﻿# <TITLE>
+# Agent Optimization
 
-[![License: MIT](https://img.shields.io/github/license/ramp-eu/TTE.project1.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/ramp-eu/TTE.project1.svg)](https://hub.docker.com/r/<org>/<repo>/)
-<br/>
-[![Documentation Status](https://readthedocs.org/projects/tte-project1/badge/?version=latest)](https://tte-project1.readthedocs.io/en/latest/?badge=latest)
-[![CI](https://github.com/ramp-eu/TTE.project1/workflows/CI/badge.svg)](https://github.com/ramp-eu/TTE.project1/actions?query=workflow%3ACI)
-[![Coverage Status](https://coveralls.io/repos/github/ramp-eu/TTE.project1/badge.svg?branch=master)](https://coveralls.io/github/ramp-eu/TTE.project1?branch=master)
-[![Codacy grade](https://img.shields.io/codacy/grade/99310c5c4332439197633912a99d2e3c)](https://app.codacy.com/manual/jason-fox/TTE.project1)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4187/badge)](https://bestpractices.coreinfrastructure.org/projects/4187)
-
-```text
-
-The Badges above demonstrate testing, code coverage
-and commitment to coding standards (since the code is linted on commit).
-
-The links need to be amended to point to the correct repo.
-
-Sign up for:
-
-- CI Test system - e.g. GitHub Actions, Travis
-- A Documentation website - e.g. ReadTheDocs
-- Static Code Analysis tool - e.g. Codacy
-- CII Best Practices https://bestpractices.coreinfrastructure.org
-
-Only CII Best Practices (and its badge) is mandatory. Any equivalent public automated tools for the other three may be used.
-
-Note that the CII Best Practices questionaire will request evidence of tooling used.
-
-```
-
-```text
-One or two sentence preamble describing the element
-```
+This project is part of [Better Fatory](https://betterfactory.eu/). For more information check the RAMP Catalogue entry for the [components](https://github.com/ramp-eu).
 
 ## Contents
-
-- [<TITLE>](#title)
-  - [Contents](#contents)
-  - [Background](#background)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [API](#api)
-  - [Testing](#testing)
-  - [License](#license)
+-   [Background](#Background)
+-   [Install](#Install)
+-   [Usage](#Usage)
+-   [Contribution](#contribution)
+-   [License](#license)
 
 ## Background
 
-```text
-Background information and links to relevant terms
-```
+The objective of the Agent Optimization package is to compute the optimal number of agnets (AGVs, humans, ...) for material transport.
+
+The package uses the following input information stored in MongoDB:
+- Distances matrix – distance from station to station (NxN matrix, N - number of stations).
+- Flow rate matrix – representing material flow rate from station to station (NxN matrix, N - number of stations).
+- Agent parameters (agent speed, agent capacity, agent availability, time to load, time to unload, traffic factor, operator efficiency).
+
+The input data can be inserted for processing:
+- Manually using MondoDB commands.
+- Using your own applikaction.
+- Using Material Flow package which extract data from Real-Time Locating System (RTLS) package.
 
 ## Install
 
-```text
-How to install the component
+The installation instructions are meant for devices with
+- Ubuntu 20.04 or higher
 
-Information about how to install the <Name of component> can be found at the corresponding section of the
-[Installation & Administration Guide](docs/installationguide.md).
+First, update and restart your system:
+```
+sudo apt update
+sudo apt-get upgrade
+sudo reboot
+```
 
-A `Dockerfile` is also available for your use - further information can be found [here](docker/README.md)
+There are 2 ways of deploying Agent Optimization
+- Using GitHub repo to construct the docker image
+- Download the Agent Opimization docker image
 
+### Download GitHub repo and build the docker container
+Follow the [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/):
+```
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo docker run hello-world
+```
+
+Then [Docker Compose on Linux systems](https://docs.docker.com/compose/install/)
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+```
+
+Install [Git](https://github.com/git-guides/install-git)
+```
+sudo apt install git
+```
+
+Create a directory (GIT_REPO as example), init the git and clone it
+```
+mkdir GIT_REPO
+cd Desktop/GIT_REPO/
+git init
+git clone https://github.com/BF-OPILdev/AgentOptimization
+cd 
+```
+
+Go to the docker directory where the dockerfile is located and compose the image
+```
+sudo chmod 666 /var/run/docker.sock
+docker build -t agent-optimization .
+```
+
+The docker image is ready to use. You can follow the [Usage](#Usage) chapter.
+
+### Download Agent Optimization docker image
+
+Follow the [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/):
+```
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo docker run hello-world
+```
+
+Download the docker image
+```
+docker pull docker.ramp.eu/opil/AgentOptimization
 ```
 
 ## Usage
 
-```text
-How to use the component
-
-Information about how to use the <Name of component> can be found in the [User & Programmers Manual](docs/usermanual.md).
-
-The following features are listed as [deprecated](docs/deprecated.md).
+Agent Optimization can be used as stand alone package. It contains MongoDB. To start the Agent Optimization docker image use
+```
+sudo docker run -d -p 27017:27017 --name ao-instance1 -v mongo-data:/data/db  agent-optimization
 ```
 
-## API
-
-```text
-Definition of the API interface :
-
-Information about the API of  the <Name of component> can be found in the [API documentation](docs/api.md).
-
+If the container is not running find it's ID and restat it (cc221ab99ad58dbd881579a51a8664692548a20f85d11b08934d10432aaf9194 is an example)
+```
+docker ps -a --no-trunc
+docker restart cc221ab99ad58dbd881579a51a8664692548a20f85d11b08934d10432aaf9194
 ```
 
-## Testing
-
-```text
-How to test the component
-
-For performing a basic end-to-end test, you have to follow the step below. A detailed description about how to run tests can be found [here].
-
-> npm test
-
+To interact with docker image use
 ```
+sudo docker exec -it ao-instance1 /bin/bash
+```
+
+Now the container is running and we can insert data to MongoDB manually
+```
+mongo
+db.createCollection("AGENT_OPTIMIZATION")
+use AGENT_OPTIMIZATION
+db.createCollection("AGENTS")
+db.AGENTS.insertOne({"request_id" : "333", "N" : "3", "distance_matrix" : "0,50,0;0,0,60;50,0,0;", "flowrate_matrix" : "0,10,0;0,0,15;-1,0,0;", "agent_speed" : "50", "agent_load_time" : "0.75", "agent_unload_time" : "0.5", "agent_capacity" : "2", "agent_availability" : "0.95", "traffic_factor" : "0.9", "operator_efficiency" : "1.0", "result_optimal_number_of_agents" : "1.3694", "result_optimal_number_of_agents_rounded" : "2", "result_DONE" : "0" })
+db.AGENTS.find()
+```
+- The first command starts the MongoDB shell. 
+- The next 3 commands will create the default database / documents. The documents are stored in AGENT_OPTIMIZATION/AGENTS.
+- A new record is inserted into MongoDB.
+- Display the inserted record.
+
+
+The record consists of:
+- request_id - unique ID which is used to identify the record,
+- N - size of distance and flow rate matrices,
+- distance_matrix and flowrate_matrix - matrices. Rows are separated by ; and numbers in rows by ,
+- agent_speed - agent speed [m/min],
+- agent_load_time - time to load [min],
+- agent_unload_time - time to unload [min],
+- agent_capacity - agent capacity [pcs],
+- agent_availability - agent availability,
+- traffic_factor - traffic factor,
+- operator_efficiency - operator efficiency
+- result_optimal_number_of_agents - optimal number of agents (the result written by the application)
+- result_optimal_number_of_agents_rounded - rounded value of optimal number of agents (the result written by the application)
+- result_DONE - 0 - the optimization was not performed, 1 - the result were written back to database
+
+## Contribution
+
+In order to contribute you will have to request to be added to the project.
 
 ## License
 
-[MIT](LICENSE) © <TTE>
+The project is licensed under the [Apache-2](https://opensource.org/licenses/Apache-2.0) license.
