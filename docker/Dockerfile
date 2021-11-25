@@ -21,6 +21,7 @@ COPY ./src /code/
 
 RUN gcc -g -o /code/main /code/main.c $(pkg-config --libs --cflags libmongoc-1.0) -lm
 
+#RUN sudo ystemctl start mongod
 #CMD /code/main
 
 EXPOSE 27017

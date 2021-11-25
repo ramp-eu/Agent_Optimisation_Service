@@ -37,7 +37,7 @@ float result_optimal_number_of_agents;
 int result_optimal_number_of_agents_rounded;
 char* sss;
 
-printf("Optimization started...");
+printf("Optimization started...\\");
 
 // init the connector
 mongoc_init ();
