@@ -134,12 +134,15 @@ use AGENT_OPTIMIZATION
 db.createCollection("AGENTS")
 db.AGENTS.insertOne({"request_id" : "333", "N" : "3", "distance_matrix" : "0,50,0;0,0,60;50,0,0;", "flowrate_matrix" : "0,10,0;0,0,15;-1,0,0;", "agent_speed" : "50", "agent_load_time" : "0.75", "agent_unload_time" : "0.5", "agent_capacity" : "2", "agent_availability" : "0.95", "traffic_factor" : "0.9", "operator_efficiency" : "1.0", "result_optimal_number_of_agents" : "1.3694", "result_optimal_number_of_agents_rounded" : "2", "result_DONE" : "0" })
 db.AGENTS.find()
+exit
+exit
 ```
 - The first command starts the MongoDB shell. 
 - The next 3 commands will create the default database / documents. The documents are stored in AGENT_OPTIMIZATION/AGENTS.
 - A new record is inserted into MongoDB.
-- Display the inserted record.
-
+- Display the inserted record (to verify if the record was saved in database).
+- Exit from MongoDB (to shell).
+- Second exit exits from docker image (to host OS).
 
 The record consists of:
 - request_id - unique ID which is used to identify the record,
@@ -156,10 +159,18 @@ The record consists of:
 - result_optimal_number_of_agents_rounded - rounded value of optimal number of agents (the result written by the application)
 - result_DONE - 0 - the optimization was not performed, 1 - the result were written back to database
 
-## Contribution
+To start the optimization from the host OS:
+```
+docker exec -it ao-instance1 /code/main
+```
+- Executes the /code/main program inside the Docker image.
 
-In order to contribute you will have to request to be added to the project.
+To start the optimization inside the Docker image:
+```
+sudo docker exec -it ao-instance1 /bin/bash
+/code/main
+```
+- Starts the bash (command line) inside Docker.
+- Executes the optimization locally in Docker.
 
-## License
-
-The project is licensed under the [Apache-2](https://opensource.org/licenses/Apache-2.0) license.
+If the request ID and results (ideal cycle time, number of agents, rounded value) are displayed, the data from MongoDB was processed correctly. Otherwise, the structure of the MongoDB document is wrong, or the document is missing, etc.
